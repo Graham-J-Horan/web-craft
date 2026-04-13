@@ -3,13 +3,9 @@ import cloudflare from "@astrojs/cloudflare";
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  output: "static",
+  output: "static", // Hybrid-by-default in Astro 6
   adapter: cloudflare({
-    mode: 'advanced',
     imageService: 'passthrough',
   }),
   integrations: [tailwind()],
-  session: {
-    enabled: false
-  }
 });
