@@ -4,6 +4,9 @@ import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
   output: "server",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    mode: "advanced", // This creates the _worker.js file Cloudflare needs
+    imageService: "passthrough", // Avoid sharp issues on Cloudflare
+  }),
   integrations: [tailwind()],
 });
