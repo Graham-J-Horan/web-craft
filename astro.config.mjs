@@ -5,8 +5,11 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   output: "static",
   adapter: cloudflare({
-    mode: 'directory',
+    mode: 'advanced',
     imageService: 'passthrough',
   }),
   integrations: [tailwind()],
+  session: {
+    enabled: false
+  }
 });
