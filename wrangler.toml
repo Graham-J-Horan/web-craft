@@ -1,7 +1,6 @@
 name = "webcraft-ai"
-main = "dist/_worker.js"
 compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
 
-[site]
-bucket = "./dist"
+# We leave 'main' and 'bucket' out here to avoid build-time validation errors.
+# Cloudflare dashboard settings will handle the paths.
