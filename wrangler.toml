@@ -1,0 +1,6 @@
+name = "webcraft-ai"
+pages_build_output_dir = "dist"
+
+[vars]
+# Add your environment variables here if they aren't in the dashboard
+# GEMINI_API_KEY = "..."
