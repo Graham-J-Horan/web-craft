@@ -140,6 +140,13 @@ async function generateWithCloudflareWorker(
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
+export const GET: APIRoute = async () => {
+  return new Response(JSON.stringify({ status: 'API is reachable', timestamp: new Date().toISOString() }), {
+    status: 200,
+    headers: { 'Content-Type': 'application/json' },
+  });
+};
+
 export const POST: APIRoute = async ({ request, locals }) => {
   // ── 1. Parse & validate input ──────────────────────────────────────────────
 

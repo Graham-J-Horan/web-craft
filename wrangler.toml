@@ -1,6 +1,7 @@
 name = "webcraft-ai"
-pages_build_output_dir = "dist"
-
-# Compatibility flags for Astro 6 + Cloudflare
+main = "dist/_worker.js"
 compatibility_date = "2024-11-01"
 compatibility_flags = ["nodejs_compat"]
+
+[site]
+bucket = "./dist"
