@@ -1,0 +1,128 @@
+---
+import Layout from '../layouts/Layout.astro';
+import logo from '../assets/web_craft_logo.svg';
+import '../styles/global.css';
+
+const reviews = [
+  {
+    quote: "I needed a site for my plumbing business but didn't have £2k to drop on an agency. WebCraft's AI mockup was scary-accurate, and the final site they built is already bringing in emergency calls.",
+    initials: 'DM',
+    name: 'Dave Murphy',
+    business: "Murphy's Emergency Plumbing",
+  },
+  {
+    quote: "The 'Clean & Minimal' vibe was exactly what my accounting firm needed. The speed from generating the initial idea to having a live, SEO-ready site in Dublin was incredible.",
+    initials: 'SO',
+    name: "Sarah O'Connor",
+    business: 'OCP Chartered Accountants',
+  },
+  {
+    quote: "As a photographer, the visual side was everything. WebCraft's AI understood my aesthetic instantly. The human team then polished the transitions to perfection. 10/10.",
+    initials: 'LB',
+    name: 'Liam Byrne',
+    business: 'Byrne Visuals',
+  },
+  {
+    quote: "The best part is not having to write copy. The AI generated a headline that perfectly summed up my USP. It's the first time I've been proud to send clients to my website.",
+    initials: 'RK',
+    name: 'Ryan Kavanagh',
+    business: 'Dublin Personal Training',
+  },
+];
+---
+
+<Layout
+  title="Client Stories — WebCraft"
+  description="See how WebCraft has helped plumbers, accountants, and creatives across Ireland and the UK launch professional websites in record time."
+>
+  <div class="min-h-screen flex flex-col" style="background:#080a12;">
+
+    <!-- NAV -->
+    <nav
+      aria-label="Main navigation"
+      class="fixed top-0 w-full z-50 glass border-b border-[var(--outline-variant)]/10 flex justify-between items-center px-6 md:px-10"
+      style="height:var(--nav-height);"
+    >
+      <a href="/" aria-label="WebCraft — return to home">
+        <img src={logo.src} alt="WebCraft" class="h-12 w-auto" />
+      </a>
+
+      <div class="hidden md:flex items-center gap-8 text-sm">
+        <a href="/#how-it-works"  class="text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] transition-colors">How it works</a>
+        <a href="/testimonials"   class="text-[var(--on-surface)] font-bold transition-colors" aria-current="page">Client Stories</a>
+        <a href="/about"          class="text-[var(--on-surface-variant)] hover:text-[var(--on-surface)] transition-colors">About Us</a>
+      </div>
+
+      <a href="/#generate" class="btn-glow px-5 py-2.5 rounded-full text-sm" style="text-decoration:none;display:inline-flex;align-items:center;">
+        Build My Site
+      </a>
+    </nav>
+
+    <!-- MAIN -->
+    <main
+      id="main-content"
+      tabindex="-1"
+      class="flex-1 px-6 md:px-10 max-w-5xl mx-auto w-full"
+      style="padding-top:calc(var(--nav-height) + 5rem); padding-bottom:5rem;"
+    >
+      <header class="text-center mb-16">
+        <h1 class="font-headline text-5xl md:text-6xl font-bold mb-6 tracking-tight">
+          Trusted by <span class="grad-primary">local legends.</span>
+        </h1>
+        <p class="text-[var(--on-surface-variant)] text-lg max-w-2xl mx-auto">
+          We've helped hundreds of tradespeople and professionals move away from generic templates to bespoke, high-conversion digital homes.
+        </p>
+      </header>
+
+      <!--
+        Reviews use <article> — each is a self-contained piece of content.
+        Stars are marked up with aria-label so screen readers read "5 stars"
+        rather than five individual star characters.
+      -->
+      <div class="grid md:grid-cols-2 gap-6">
+        {reviews.map((r, i) => (
+          <article
+            class="p-8 rounded-[2rem] border border-[var(--outline-variant)]/10 relative"
+            style={`background: ${i % 2 === 0 ? 'var(--surface-container)' : 'var(--surface-container-high)'};`}
+          >
+            <div class="flex gap-1 mb-4 text-[var(--primary)] text-lg" aria-label="5 out of 5 stars" role="img">
+              <span aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+            </div>
+            <blockquote class="text-[var(--on-surface)] text-lg italic leading-relaxed mb-6">
+              &ldquo;{r.quote}&rdquo;
+            </blockquote>
+            <footer class="flex items-center gap-4">
+              <div
+                class="w-12 h-12 rounded-full flex items-center justify-center font-bold text-white flex-shrink-0"
+                style="background:linear-gradient(135deg,#064e3b,#10b981);"
+                aria-hidden="true"
+              >
+                {r.initials}
+              </div>
+              <div>
+                <cite class="not-italic font-bold text-[var(--on-surface)] block">{r.name}</cite>
+                <span class="text-xs text-[var(--on-surface-variant)] uppercase tracking-widest font-bold">{r.business}</span>
+              </div>
+            </footer>
+          </article>
+        ))}
+      </div>
+
+      <!-- CTA -->
+      <div class="text-center mt-20">
+        <p class="text-[var(--on-surface-variant)] text-lg mb-6">Ready to join them?</p>
+        <a href="/#generate" class="btn-glow px-8 py-4 rounded-full text-base" style="text-decoration:none;display:inline-flex;align-items:center;">
+          Generate My Website &rarr;
+        </a>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-[var(--outline-variant)]/10 py-10 px-6 md:px-10 mt-10">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+        <img src={logo.src} alt="WebCraft" class="h-10 w-auto" />
+        <p class="text-xs text-[var(--outline)]">&copy; 2025 WebCraft. All rights reserved. Built with passion in Dublin.</p>
+      </div>
+    </footer>
+  </div>
+</Layout>

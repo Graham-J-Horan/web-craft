@@ -1,0 +1,437 @@
+---
+import Layout from '../layouts/Layout.astro';
+import logo from '../assets/web_craft_logo.svg';
+import '../styles/global.css';
+---
+
+<Layout
+  title="Finalising Your Design — WebCraft"
+  description="Review your AI-generated website mockup. Happy with it? Lock it in and receive your no-obligation proposal within 72 hours."
+>
+  <div class="min-h-screen flex flex-col" style="background:#080a12;">
+
+    <!-- NAV -->
+    <nav
+      aria-label="Page navigation"
+      class="fixed top-0 w-full z-50 glass border-b border-[var(--outline-variant)]/10 flex justify-between items-center px-6 md:px-10"
+      style="height:var(--nav-height);"
+    >
+      <a href="/" aria-label="WebCraft — return to home">
+        <img src={logo.src} alt="WebCraft" class="h-12 w-auto" />
+      </a>
+      <div class="flex items-center gap-3">
+        <button id="btn-regen" class="btn-ghost" aria-label="Regenerate a new version of your website design">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 1 0 .49-3.21"/>
+          </svg>
+          Regenerate
+        </button>
+        <a href="/" class="text-[var(--on-surface-variant)] text-sm font-semibold hover:text-[var(--on-surface)] transition-colors" aria-label="Start over from the beginning">
+          &larr; Start over
+        </a>
+      </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main
+      id="main-content"
+      tabindex="-1"
+      class="flex-1 max-w-7xl mx-auto w-full px-6 md:px-10"
+      style="padding-top:calc(var(--nav-height) + 2.5rem); padding-bottom:3rem;"
+    >
+      <!-- SR live region -->
+      <div id="sr-status" role="status" aria-live="polite" aria-atomic="true" class="sr-only"></div>
+
+      <!-- Business context banner -->
+      <div class="mb-6 flex items-center gap-3" aria-live="polite">
+        <span class="text-sm text-[var(--on-surface-variant)]">Designing for</span>
+        <span id="brief-biz-name" class="font-headline font-bold text-sm grad-primary"></span>
+        <span class="text-[var(--outline-variant)]" aria-hidden="true">&middot;</span>
+        <span id="brief-trade" class="text-sm text-[var(--on-surface-variant)]"></span>
+      </div>
+
+      <div class="grid lg:grid-cols-12 gap-8 xl:gap-12 items-start">
+
+        <!-- Left: image preview -->
+        <div class="lg:col-span-8 space-y-5">
+
+          <div class="relative rounded-3xl overflow-hidden shadow-2xl bg-[var(--surface-container-high)]" style="aspect-ratio:4/3;">
+
+            <!-- Loading state -->
+            <div
+              id="loading-state"
+              class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-[var(--surface)]/95 backdrop-blur-xl"
+              role="status"
+              aria-label="Generating your website design, please wait"
+            >
+              <div class="relative w-20 h-20 mb-8" aria-hidden="true">
+                <svg class="absolute inset-0 w-full h-full animate-spin" viewBox="0 0 96 96">
+                  <circle cx="48" cy="48" r="44" fill="none" stroke="rgba(16,185,129,0.1)" stroke-width="3"/>
+                  <circle cx="48" cy="48" r="44" fill="none" stroke="url(#ringGrad)" stroke-width="3" stroke-dasharray="276" stroke-dashoffset="200" stroke-linecap="round"/>
+                  <defs>
+                    <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%"   stop-color="#10b981"/>
+                      <stop offset="100%" stop-color="#6ee7b7"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
+              </div>
+              <h2 id="loading-headline" class="font-headline text-xl md:text-2xl font-bold text-[var(--on-surface)] mb-2 text-center px-4">
+                Generating your design&hellip;
+              </h2>
+              <p id="loading-sub" class="text-[var(--on-surface-variant)] text-sm text-center max-w-xs px-4">
+                Our AI is crafting a bespoke mockup based on your trade and vibe.
+              </p>
+              <div class="mt-8 w-56 h-1 bg-[var(--surface-container-highest)] rounded-full overflow-hidden">
+                <div
+                  id="loading-progress"
+                  class="h-full rounded-full"
+                  style="width:0%; background:linear-gradient(90deg,var(--primary),var(--tertiary)); transition:width 1.5s ease;"
+                  role="progressbar"
+                  aria-valuenow="0"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                ></div>
+              </div>
+              <p id="loading-pct" class="text-xs text-[var(--outline)] mt-2">0%</p>
+            </div>
+
+            <!-- Error state -->
+            <div
+              id="gen-error-state"
+              class="absolute inset-0 z-20 hidden flex-col items-center justify-center bg-[var(--surface)]/95 backdrop-blur-xl p-8 text-center"
+              role="alert"
+            >
+              <div class="w-16 h-16 rounded-full flex items-center justify-center mb-6" style="background:rgba(255,110,132,0.1);border:1px solid rgba(255,110,132,0.3);" aria-hidden="true">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--error)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+              </div>
+              <h2 class="font-headline text-xl font-bold text-[var(--on-surface)] mb-2">Generation failed</h2>
+              <p id="error-detail" class="text-[var(--on-surface-variant)] text-sm mb-6 max-w-xs">Something went wrong with the AI engine. Please try again.</p>
+              <button id="btn-retry" class="btn-glow px-6 py-3 rounded-xl text-sm">Try again</button>
+            </div>
+
+            <!-- Generated image -->
+            <img
+              id="final-img"
+              src=""
+              alt=""
+              class="w-full h-full object-cover object-top"
+              style="opacity:0; transition:opacity 1s ease;"
+            />
+          </div>
+
+          <!-- Regenerate action bar -->
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 glass border border-[var(--outline-variant)]/10 rounded-2xl">
+            <div>
+              <h3 class="font-headline text-base font-bold text-[var(--on-surface)]">Not quite right?</h3>
+              <p class="text-[var(--on-surface-variant)] text-xs mt-0.5">Regenerate as many times as you like for free.</p>
+            </div>
+            <button id="btn-regen-cta" class="btn-ghost flex-shrink-0" aria-label="Generate a new version of your website design">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+                <polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.21"/>
+              </svg>
+              Regenerate design
+            </button>
+          </div>
+        </div>
+
+        <!-- Right: lock-in form -->
+        <div class="lg:col-span-4">
+          <div class="glass border border-[var(--outline-variant)]/20 rounded-3xl p-6 shadow-xl sticky top-24">
+
+            <div class="mb-5">
+              <p class="text-[var(--tertiary)] text-xs font-bold uppercase tracking-widest mb-1">Step 5 &mdash; Lock it in</p>
+              <h2 class="font-headline text-xl font-bold text-[var(--on-surface)] mb-1">Get Your Proposal</h2>
+              <p class="text-[var(--on-surface-variant)] text-sm leading-relaxed">
+                Happy with the design? Submit your details and we'll send a full costed proposal within 72 hours. No payment. No commitment.
+              </p>
+            </div>
+
+            <form
+              id="final-form"
+              action="https://formspree.io/f/YOUR_FORMSPREE_ID"
+              method="POST"
+              novalidate
+              aria-label="Request your proposal"
+            >
+              <!-- Hidden brief context -->
+              <input type="hidden" name="_subject"      value="New proposal request — WebCraft" />
+              <input type="hidden" name="trade"         id="hidden-trade" />
+              <input type="hidden" name="business_name" id="hidden-biz-name" />
+              <input type="hidden" name="location"      id="hidden-location" />
+              <input type="hidden" name="goal"          id="hidden-goal" />
+              <input type="hidden" name="vibe"          id="hidden-vibe" />
+              <input type="hidden" name="usp"           id="hidden-usp" />
+              <input type="hidden" name="image_prompt"  id="hidden-prompt" />
+              <input type="hidden" name="image_url"     id="hidden-url" />
+
+              <div class="space-y-4">
+                <div>
+                  <label for="full-name" class="field-label">
+                    Full name <span class="text-[var(--error)]" aria-hidden="true">*</span><span class="sr-only">(required)</span>
+                  </label>
+                  <input type="text" id="full-name" name="name" required class="gen-input" placeholder="e.g. John Doe" autocomplete="name" aria-required="true" aria-describedby="name-error" />
+                  <p id="name-error" class="field-error" role="alert"></p>
+                </div>
+
+                <div>
+                  <label for="contact-email" class="field-label">
+                    Email address <span class="text-[var(--error)]" aria-hidden="true">*</span><span class="sr-only">(required)</span>
+                  </label>
+                  <input type="email" id="contact-email" name="email" required class="gen-input" placeholder="john@example.com" autocomplete="email" aria-required="true" aria-describedby="email-error" inputmode="email" />
+                  <p id="email-error" class="field-error" role="alert"></p>
+                </div>
+
+                <div>
+                  <label for="contact-phone" class="field-label">Phone <span class="text-[var(--outline)]" style="text-transform:none;letter-spacing:normal;font-weight:400;">(optional)</span></label>
+                  <input type="tel" id="contact-phone" name="phone" class="gen-input" placeholder="e.g. 07123 456789" autocomplete="tel" inputmode="tel" />
+                </div>
+
+                <div>
+                  <label for="notes" class="field-label">Anything else? <span class="text-[var(--outline)]" style="text-transform:none;letter-spacing:normal;font-weight:400;">(optional)</span></label>
+                  <textarea id="notes" name="message" class="gen-input resize-none" rows="3" placeholder="Budget range, timeline, specific requirements..." maxlength="500" style="height:auto;padding-top:0.875rem;padding-bottom:0.875rem;"></textarea>
+                </div>
+              </div>
+
+              <button type="submit" id="btn-submit" class="btn-glow w-full py-3.5 rounded-xl text-sm mt-5" aria-describedby="submit-note">
+                Send My Proposal Request &rarr;
+              </button>
+
+              <div id="submit-note" class="flex items-center justify-center gap-5 mt-3">
+                <span class="flex items-center gap-1.5 text-xs text-[var(--outline)]">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  No payment
+                </span>
+                <span class="flex items-center gap-1.5 text-xs text-[var(--outline)]">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+                  No obligation
+                </span>
+                <span class="flex items-center gap-1.5 text-xs text-[var(--outline)]">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  72hr reply
+                </span>
+              </div>
+            </form>
+
+            <!-- Success state -->
+            <div id="form-success" class="hidden text-center py-4" role="status" aria-live="polite">
+              <div class="w-14 h-14 rounded-full flex items-center justify-center mx-auto mb-4" style="background:rgba(110,231,183,0.15);border:1px solid rgba(110,231,183,0.3);" aria-hidden="true">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--tertiary)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </div>
+              <h3 class="font-headline text-lg font-bold text-[var(--on-surface)] mb-1">Request sent!</h3>
+              <p class="text-[var(--on-surface-variant)] text-sm leading-relaxed">
+                We'll review your design and send your personalised proposal to <strong id="success-email" class="text-[var(--on-surface)]"></strong> within 72 hours.
+              </p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <footer class="border-t border-[var(--outline-variant)]/10 py-6 px-6 md:px-10 mt-10">
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+        <img src={logo.src} alt="WebCraft" class="h-8 w-auto" />
+        <p class="text-xs text-[var(--outline)]">&copy; 2025 WebCraft. All rights reserved.</p>
+      </div>
+    </footer>
+
+  </div>
+</Layout>
+
+<script>
+import { loadBrief, clearBrief } from '../lib/session';
+
+const brief = loadBrief();
+if (!brief) { window.location.replace('/'); }
+
+const loadingState    = document.getElementById('loading-state')    as HTMLElement;
+const errorState      = document.getElementById('gen-error-state')  as HTMLElement;
+const errorDetail     = document.getElementById('error-detail')     as HTMLElement;
+const finalImg        = document.getElementById('final-img')        as HTMLImageElement;
+const loadingHeadline = document.getElementById('loading-headline') as HTMLElement;
+const loadingSub      = document.getElementById('loading-sub')      as HTMLElement;
+const loadingProgress = document.getElementById('loading-progress') as HTMLElement;
+const loadingPct      = document.getElementById('loading-pct')      as HTMLElement;
+const srStatus        = document.getElementById('sr-status')        as HTMLElement;
+const briefBizName    = document.getElementById('brief-biz-name')   as HTMLElement;
+const briefTrade      = document.getElementById('brief-trade')      as HTMLElement;
+
+if (brief) {
+  briefBizName.textContent = brief.businessName;
+  briefTrade.textContent   = brief.trade;
+}
+
+function announce(msg: string) {
+  srStatus.textContent = '';
+  requestAnimationFrame(() => { srStatus.textContent = msg; });
+}
+
+const stages = [
+  { pct: 10, headline: 'Reading your brief\u2026',         sub: 'Analysing your trade, goals, and vibe.' },
+  { pct: 28, headline: 'Writing your design spec\u2026',   sub: 'Choosing layout, palette, and typography.' },
+  { pct: 50, headline: 'Rendering your website\u2026',     sub: 'The AI is painting every section in your style.' },
+  { pct: 72, headline: 'Refining the details\u2026',       sub: 'Typography and spacing are being polished.' },
+  { pct: 90, headline: 'Almost there\u2026',               sub: 'Your bespoke design is nearly ready.' },
+];
+
+let stageIdx = 0;
+let stageInterval: ReturnType<typeof setInterval> | null = null;
+
+function setProgress(pct: number) {
+  loadingProgress.style.width = pct + '%';
+  loadingProgress.setAttribute('aria-valuenow', String(pct));
+  loadingPct.textContent = pct + '%';
+}
+
+function advanceStage() {
+  if (stageIdx >= stages.length) return;
+  const s = stages[stageIdx];
+  loadingHeadline.textContent = s.headline;
+  loadingSub.textContent      = s.sub;
+  setProgress(s.pct);
+  stageIdx++;
+}
+
+function startLoadingAnimation() {
+  stageIdx = 0;
+  advanceStage();
+  stageInterval = setInterval(advanceStage, 3500);
+}
+
+function stopLoadingAnimation() {
+  if (stageInterval) { clearInterval(stageInterval); stageInterval = null; }
+}
+
+function showErrorState(msg: string) {
+  stopLoadingAnimation();
+  loadingState.style.display = 'none';
+  errorDetail.textContent    = msg;
+  errorState.style.display   = 'flex';
+  errorState.classList.remove('hidden');
+  announce(`Error: ${msg}`);
+}
+
+async function generateDesign() {
+  if (!brief) return;
+
+  errorState.style.display = 'none';
+  errorState.classList.add('hidden');
+  loadingState.style.display = 'flex';
+  finalImg.style.opacity = '0';
+  finalImg.alt = '';
+  setProgress(0);
+  stageIdx = 0;
+
+  startLoadingAnimation();
+  announce('Generating your website design. This takes around 15 seconds.');
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(brief),
+    });
+
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error ?? `Server error ${res.status}`);
+    }
+
+    const data = await res.json();
+
+    (document.getElementById('hidden-trade')    as HTMLInputElement).value = brief.trade;
+    (document.getElementById('hidden-biz-name') as HTMLInputElement).value = brief.businessName;
+    (document.getElementById('hidden-location') as HTMLInputElement).value = brief.location;
+    (document.getElementById('hidden-goal')     as HTMLInputElement).value = brief.goal;
+    (document.getElementById('hidden-vibe')     as HTMLInputElement).value = brief.vibe;
+    (document.getElementById('hidden-usp')      as HTMLInputElement).value = brief.usp ?? '';
+    (document.getElementById('hidden-prompt')   as HTMLInputElement).value = data.imagePrompt ?? '';
+    (document.getElementById('hidden-url')      as HTMLInputElement).value = data.imageUrl;
+
+    finalImg.onload = () => {
+      stopLoadingAnimation();
+      setProgress(100);
+      setTimeout(() => {
+        loadingState.style.display = 'none';
+        finalImg.style.opacity = '1';
+        finalImg.alt = `AI-generated website design for ${brief.businessName}`;
+        announce("Your website design is ready. Review it and lock it in when you're happy.");
+      }, 400);
+    };
+
+    finalImg.onerror = () => { showErrorState('The image failed to load. Please try regenerating.'); };
+    finalImg.src = data.imageUrl;
+
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Unknown error. Please try again.';
+    showErrorState(msg);
+    console.error('[finalise]', err);
+  }
+}
+
+document.getElementById('btn-retry')   ?.addEventListener('click', generateDesign);
+document.getElementById('btn-regen')   ?.addEventListener('click', generateDesign);
+document.getElementById('btn-regen-cta')?.addEventListener('click', generateDesign);
+
+// Form
+const form        = document.getElementById('final-form')     as HTMLFormElement;
+const nameInput   = document.getElementById('full-name')      as HTMLInputElement;
+const emailInput  = document.getElementById('contact-email')  as HTMLInputElement;
+const submitBtn   = document.getElementById('btn-submit')     as HTMLButtonElement;
+const formSuccess = document.getElementById('form-success')   as HTMLElement;
+const successEmail= document.getElementById('success-email')  as HTMLElement;
+
+function setFieldError(el: HTMLInputElement, errEl: HTMLElement, msg: string) {
+  el.setAttribute('aria-invalid', 'true'); errEl.textContent = msg; errEl.classList.add('visible');
+}
+function clearFieldError(el: HTMLInputElement, errEl: HTMLElement) {
+  el.removeAttribute('aria-invalid'); errEl.textContent = ''; errEl.classList.remove('visible');
+}
+
+nameInput.addEventListener('input',  () => { if (nameInput.value.trim())  clearFieldError(nameInput,  document.getElementById('name-error')!  as HTMLInputElement); });
+emailInput.addEventListener('input', () => { if (emailInput.value.trim()) clearFieldError(emailInput, document.getElementById('email-error')! as HTMLInputElement); });
+
+form.addEventListener('submit', async e => {
+  e.preventDefault();
+  const nameErr  = document.getElementById('name-error')  as HTMLElement;
+  const emailErr = document.getElementById('email-error') as HTMLElement;
+  let valid = true;
+
+  if (!nameInput.value.trim())  { setFieldError(nameInput,  nameErr,  'Please enter your full name.');         valid = false; } else { clearFieldError(nameInput,  nameErr); }
+  const emailVal = emailInput.value.trim();
+  if (!emailVal)                { setFieldError(emailInput, emailErr, 'Please enter your email address.');     valid = false; }
+  else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) { setFieldError(emailInput, emailErr, 'Please enter a valid email address.'); valid = false; }
+  else                          { clearFieldError(emailInput, emailErr); }
+
+  if (!valid) { form.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(); return; }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending\u2026';
+  announce('Sending your proposal request\u2026');
+
+  try {
+    const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+    if (res.ok) {
+      form.style.display = 'none';
+      successEmail.textContent = emailVal;
+      formSuccess.classList.remove('hidden');
+      clearBrief();
+      announce(`Success. Proposal request sent to ${emailVal}.`);
+    } else { throw new Error(`Submission failed (${res.status})`); }
+  } catch (err) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Send My Proposal Request \u2192';
+    const banner = document.createElement('p');
+    banner.className = 'text-sm mb-3'; banner.style.color = 'var(--error)'; banner.role = 'alert';
+    banner.textContent = 'Something went wrong. Please try again.';
+    form.prepend(banner);
+    setTimeout(() => banner.remove(), 6000);
+    announce('Form submission failed. Please try again.');
+  }
+});
+
+generateDesign();
+</script>

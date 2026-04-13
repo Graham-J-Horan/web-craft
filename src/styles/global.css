@@ -1,0 +1,290 @@
+/* ============================================================
+   global.css — single source of truth for WebCraft
+   Imported in every page via: import '../styles/global.css'
+   ============================================================ */
+
+/* ── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Design tokens ─────────────────────────────────────────── */
+:root {
+  --surface:                    #0c0e17;
+  --surface-container-low:      #11131d;
+  --surface-container:          #171924;
+  --surface-container-high:     #1c1f2b;
+  --surface-container-highest:  #222532;
+  --on-surface:                 #f0f0fd;
+  --on-surface-variant:         #aaaab7;
+  --outline:                    #737580;
+  --outline-variant:            #464752;
+  --primary:                    #10b981;
+  --primary-dim:                #059669;
+  --secondary:                  #34d399;
+  --secondary-dim:              #047857;
+  --tertiary:                   #6ee7b7;
+  --error:                      #ff6e84;
+
+  --font-headline: 'Space Grotesk', system-ui, sans-serif;
+  --font-body:     'Manrope', system-ui, sans-serif;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-fast: 0.18s ease;
+  --transition-mid:  0.3s ease;
+
+  /* Nav height — single source of truth, read by JS via getComputedStyle */
+  --nav-height: 72px;
+}
+
+/* ── Base ──────────────────────────────────────────────────── */
+html {
+  /* Do NOT set scroll-behavior: smooth here — it interferes with
+     programmatic scrollToEl() calls that set their own behavior */
+  font-family: var(--font-body);
+}
+
+body {
+  background: var(--surface);
+  color: var(--on-surface);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Grain texture */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.35;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar          { width: 5px; }
+::-webkit-scrollbar-track    { background: var(--surface); }
+::-webkit-scrollbar-thumb    { background: var(--outline-variant); border-radius: 99px; }
+
+/* ── Reduced motion ────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ── Glass ─────────────────────────────────────────────────── */
+.glass {
+  background: rgba(22, 25, 36, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+.glass-light {
+  background: rgba(34, 37, 50, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+/* ── Gradient text ─────────────────────────────────────────── */
+.grad-primary {
+  background: linear-gradient(135deg, #a7f3d0 0%, #10b981 50%, #064e3b 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Buttons ───────────────────────────────────────────────── */
+.btn-glow {
+  position: relative;           /* required: ::before uses z-index:-1 */
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-headline);
+  font-weight: 700;
+  transition: transform var(--transition-mid), box-shadow var(--transition-mid);
+}
+.btn-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(135deg, #10b981, #6ee7b7, #34d399);
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  filter: blur(8px);
+  transition: opacity var(--transition-mid);
+}
+.btn-glow:hover::before  { opacity: 0.7; }
+.btn-glow:hover          { transform: translateY(-1px); box-shadow: 0 20px 60px rgba(16,185,129,0.35); }
+.btn-glow:active         { transform: scale(0.97); }
+.btn-glow:focus-visible  { outline: 3px solid var(--primary); outline-offset: 3px; }
+.btn-glow:disabled       { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+
+.btn-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 99px;
+  border: 1.5px solid var(--outline-variant);
+  background: transparent;
+  color: var(--on-surface-variant);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+.btn-ghost:hover         { border-color: var(--outline); color: var(--on-surface); }
+.btn-ghost:focus-visible { outline: 3px solid var(--primary); outline-offset: 3px; }
+
+/* ── Form elements ─────────────────────────────────────────── */
+.gen-input {
+  background: var(--surface-container-highest);
+  color: var(--on-surface);
+  border: 1.5px solid transparent;
+  border-radius: 0.75rem;
+  padding: 0.875rem 1.125rem;
+  font-family: var(--font-body);
+  font-size: 0.9375rem;
+  width: 100%;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.gen-input:focus              { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(16,185,129,0.15); }
+.gen-input::placeholder       { color: var(--outline); }
+.gen-input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 3px rgba(255,110,132,0.15); }
+
+.field-label {
+  display: block;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--outline);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: 0.375rem;
+}
+
+.field-error {
+  font-size: 0.75rem;
+  color: var(--error);
+  margin-top: 0.25rem;
+  display: none;
+}
+.field-error.visible { display: block; }
+
+.error-banner {
+  display: none;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 1rem 1.25rem;
+  background: rgba(255,110,132,0.1);
+  border: 1.5px solid rgba(255,110,132,0.3);
+  border-radius: 0.75rem;
+  color: #ffb2bc;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+.error-banner.visible { display: flex; }
+
+/* ── Trade pill ────────────────────────────────────────────── */
+.trade-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5625rem 1rem;
+  border-radius: 99px;
+  border: 1.5px solid var(--outline-variant);
+  background: var(--surface-container-high);
+  color: var(--on-surface-variant);
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.trade-pill:hover                { border-color: var(--primary); color: var(--on-surface); background: var(--surface-container-highest); }
+.trade-pill:focus-visible        { outline: 3px solid var(--primary); outline-offset: 2px; }
+.trade-pill[aria-pressed="true"] { background: rgba(16,185,129,0.15); border-color: var(--primary); color: var(--primary); }
+
+/* ── Choice tile (goal + vibe) ─────────────────────────────── */
+.choice-tile {
+  position: relative;
+  cursor: pointer;
+  background: var(--surface-container);
+  border: 1.5px solid var(--outline-variant);
+  border-radius: 1rem;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+.choice-tile:hover        { background: var(--surface-container-high); transform: translateY(-2px); border-color: rgba(16,185,129,0.4); }
+.choice-tile:focus-within { outline: 3px solid var(--primary); outline-offset: 2px; }
+.choice-tile.selected     { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(16,185,129,0.25), 0 8px 32px rgba(16,185,129,0.12); }
+.choice-tile input[type="radio"] { position: absolute; opacity: 0; width: 1px; height: 1px; pointer-events: none; }
+
+/* ── Process card ──────────────────────────────────────────── */
+.process-card { transition: transform var(--transition-mid), box-shadow var(--transition-mid); }
+.process-card:hover { transform: translateY(-4px); box-shadow: 0 24px 60px rgba(0,0,0,0.4); }
+
+/* ── Scroll reveal ─────────────────────────────────────────── */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.65s ease, transform 0.65s ease;
+}
+.reveal-on-scroll.visible { opacity: 1; transform: none; }
+
+/* ── Float animations ──────────────────────────────────────── */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-8px); }
+}
+.float-1 { animation: float 5s ease-in-out infinite; }
+.float-2 { animation: float 6s ease-in-out infinite 1s; }
+
+/* ── Spinner ───────────────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.animate-spin { animation: spin 1.8s linear infinite; }
+
+/* ── Ping animation (hero urgency dot) ─────────────────────── */
+@keyframes ping {
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+.animate-ping { animation: ping 1s cubic-bezier(0,0,0.2,1) infinite; }
+
+/* ── Progressive step disclosure ──────────────────────────── */
+/*
+ * Steps use the HTML [hidden] attribute for initial state.
+ * When JS removes [hidden], the browser paints the element,
+ * then the @keyframes q-reveal animation runs.
+ *
+ * IMPORTANT: .q-step[hidden] must use display:none so the element
+ * takes no layout space. The animation only applies once visible.
+ */
+.q-step[hidden] {
+  display: none !important;
+}
+
+.q-step:not([hidden]) {
+  display: block;
+  animation: q-reveal 0.55s var(--ease-out-expo) forwards;
+}
+
+@keyframes q-reveal {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Divider between adjacent revealed steps */
+.q-step:not([hidden]) + .q-step:not([hidden]) {
+  border-top: 1px solid rgba(70, 71, 82, 0.35);
+  margin-top: 2rem;
+  padding-top: 2rem;
+}

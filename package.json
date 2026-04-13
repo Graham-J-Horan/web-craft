@@ -1,0 +1,28 @@
+{
+  "name": "webcraft-ai",
+  "type": "module",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.27.0",
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/node": "^8.3.4",
+    "@astrojs/tailwind": "^6.0.2",
+    "@google/generative-ai": "^0.24.1",
+    "astro": "^4.15.0",
+    "dotenv": "^17.4.1",
+    "node-vibrant": "^4.0.3",
+    "sharp": "^0.33.5",
+    "typescript": "^6.0.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.0",
+    "@tailwindcss/typography": "^0.5.14",
+    "tailwindcss": "^3.4.19"
+  }
+}

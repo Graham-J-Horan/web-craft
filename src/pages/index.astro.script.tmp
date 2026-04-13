@@ -1,0 +1,247 @@
+  import { saveBrief } from "../lib/session";
+
+  // ── State ──────────────────────────────────────────────────
+  let selectedTrade = "";
+  let selectedGoal = "";
+  let selectedVibe = "";
+
+  // ── DOM refs ───────────────────────────────────────────────
+  const generateBtn = document.getElementById(
+    "btn-generate",
+  ) as HTMLButtonElement;
+  const tradeOther = document.getElementById("trade-other") as HTMLInputElement;
+  const bizNameInput = document.getElementById("biz-name") as HTMLInputElement;
+  const bizLocInput = document.getElementById(
+    "biz-location",
+  ) as HTMLInputElement;
+  const uspInput = document.getElementById("usp-input") as HTMLInputElement;
+  const srStatus = document.getElementById("sr-status") as HTMLElement;
+  const errorBanner = document.getElementById(
+    "gen-error-banner",
+  ) as HTMLElement;
+  const errorMsg = document.getElementById("gen-error-msg") as HTMLElement;
+  const bizNameError = document.getElementById("biz-name-error") as HTMLElement;
+  const bizLocError = document.getElementById("biz-loc-error") as HTMLElement;
+
+  // ── Announce to screen readers ─────────────────────────────
+  function announce(msg: string) {
+    srStatus.textContent = "";
+    requestAnimationFrame(() => {
+      srStatus.textContent = msg;
+    });
+  }
+
+  // ── Show/hide error banner ─────────────────────────────────
+  function showError(msg: string) {
+    errorMsg.textContent = msg;
+    errorBanner.classList.add("visible");
+    errorBanner.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
+  function clearError() {
+    errorBanner.classList.remove("visible");
+  }
+
+  // ── Progressive disclosure ─────────────────────────────────
+  // Uses hidden attribute (valid HTML) rather than display:none class
+  // Trigger: only after blur (leaving the field), not mid-keystroke
+  function revealStep(id: string) {
+    const el = document.getElementById(id);
+    if (!el || !el.hasAttribute("hidden")) return;
+    el.removeAttribute("hidden");
+    
+    // Use a slightly longer delay to ensure the browser has laid out the element
+    setTimeout(() => {
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 100);
+  }
+
+  // ── Validate — enable/disable generate ────────────────────
+  function validate() {
+    const bizName = bizNameInput.value.trim();
+    const bizLoc = bizLocInput.value.trim();
+    const isValid = !!(
+      selectedTrade &&
+      bizName &&
+      bizLoc &&
+      selectedGoal &&
+      selectedVibe
+    );
+    generateBtn.disabled = !isValid;
+    generateBtn.setAttribute("aria-disabled", String(!isValid));
+  }
+
+  // ── Trade pills ────────────────────────────────────────────
+  const tradePills =
+    document.querySelectorAll<HTMLButtonElement>(".trade-pill");
+  tradePills.forEach((pill) => {
+    pill.addEventListener("click", () => {
+      tradePills.forEach((p) => {
+        p.classList.remove("selected");
+        p.setAttribute("aria-pressed", "false");
+      });
+      pill.classList.add("selected");
+      pill.setAttribute("aria-pressed", "true");
+      selectedTrade = pill.dataset.trade ?? "";
+      tradeOther.value = "";
+      validate();
+      announce(`Trade selected: ${selectedTrade}`);
+      revealStep("step-2");
+    });
+  });
+
+  tradeOther.addEventListener("blur", () => {
+    const val = tradeOther.value.trim();
+    if (!val) return;
+    tradePills.forEach((p) => {
+      p.classList.remove("selected");
+      p.setAttribute("aria-pressed", "false");
+    });
+    selectedTrade = val;
+    validate();
+    revealStep("step-2");
+  });
+  tradeOther.addEventListener("input", () => {
+    // Keep state in sync but don't trigger disclosure mid-keystroke
+    selectedTrade = tradeOther.value.trim();
+    validate();
+  });
+
+  // ── Business name & Location — reveal Q3 on blur with valid values ─────
+  function checkStep2Completion() {
+    const nameVal = bizNameInput.value.trim();
+    const locVal = bizLocInput.value.trim();
+
+    if (nameVal && locVal) {
+      validate();
+      revealStep("step-3");
+    }
+  }
+
+  bizNameInput.addEventListener("blur", () => {
+    const val = bizNameInput.value.trim();
+    if (!val) {
+      bizNameInput.setAttribute("aria-invalid", "true");
+      bizNameError.classList.add("visible");
+    } else {
+      bizNameInput.removeAttribute("aria-invalid");
+      bizNameError.classList.remove("visible");
+    }
+    checkStep2Completion();
+  });
+
+  bizLocInput.addEventListener("blur", () => {
+    const val = bizLocInput.value.trim();
+    if (!val) {
+      bizLocInput.setAttribute("aria-invalid", "true");
+      bizLocError.classList.add("visible");
+    } else {
+      bizLocInput.removeAttribute("aria-invalid");
+      bizLocError.classList.remove("visible");
+    }
+    checkStep2Completion();
+  });
+
+  bizNameInput.addEventListener("input", () => {
+    if (bizNameInput.value.trim()) {
+      bizNameInput.removeAttribute("aria-invalid");
+      bizNameError.classList.remove("visible");
+    }
+    validate();
+  });
+
+  bizLocInput.addEventListener("input", () => {
+    if (bizLocInput.value.trim()) {
+      bizLocInput.removeAttribute("aria-invalid");
+      bizLocError.classList.remove("visible");
+    }
+    validate();
+  });
+
+  // ── Goal tiles ─────────────────────────────────────────────
+  const goalTiles = document.querySelectorAll<HTMLElement>("[data-goal]");
+  goalTiles.forEach((tile) => {
+    tile.addEventListener("click", () => {
+      goalTiles.forEach((t) => t.classList.remove("selected"));
+      tile.classList.add("selected");
+      const radio = tile.querySelector<HTMLInputElement>('input[type="radio"]');
+      if (radio) radio.checked = true;
+      selectedGoal = tile.dataset.goal ?? "";
+      validate();
+      announce(
+        `Goal selected: ${tile.querySelector(".font-bold")?.textContent?.trim()}`,
+      );
+      revealStep("step-4");
+    });
+    // Keyboard: space/enter on the label triggers the click
+  });
+
+  // ── Vibe tiles ─────────────────────────────────────────────
+  const vibeTiles = document.querySelectorAll<HTMLElement>("[data-vibe]");
+  vibeTiles.forEach((tile) => {
+    tile.addEventListener("click", () => {
+      vibeTiles.forEach((t) => t.classList.remove("selected"));
+      tile.classList.add("selected");
+      const radio = tile.querySelector<HTMLInputElement>('input[type="radio"]');
+      if (radio) radio.checked = true;
+      selectedVibe = tile.dataset.vibe ?? "";
+      validate();
+      announce(
+        `Style selected: ${tile.querySelector(".font-bold")?.textContent?.trim()}`,
+      );
+      revealStep("step-5");
+    });
+  });
+
+  // ── Generate ───────────────────────────────────────────────
+  function startGenerate() {
+    if (generateBtn.disabled) return;
+    clearError();
+
+    const brief = {
+      trade: selectedTrade,
+      businessName: bizNameInput.value.trim(),
+      location: bizLocInput.value.trim(),
+      goal: selectedGoal,
+      vibe: selectedVibe,
+      usp: uspInput.value.trim(),
+    };
+
+    // Persist with expiry
+    saveBrief(brief);
+
+    // Button loading state — prevents double-click
+    generateBtn.disabled = true;
+    generateBtn.setAttribute("aria-disabled", "true");
+    generateBtn.textContent = "Preparing your design…";
+
+    // Redirect
+    window.location.href = "/finalise";
+  }
+
+  generateBtn.addEventListener("click", startGenerate);
+
+  // ── Scroll helpers ─────────────────────────────────────────
+  function scrollToGenerate() {
+    document.getElementById("generate")?.scrollIntoView({ behavior: "smooth" });
+  }
+  document
+    .getElementById("hero-generate-btn")
+    ?.addEventListener("click", scrollToGenerate);
+  document
+    .getElementById("steps-generate-btn")
+    ?.addEventListener("click", scrollToGenerate);
+  document
+    .getElementById("nav-build-btn")
+    ?.addEventListener("click", scrollToGenerate);
+
+  // ── Scroll reveal observer ─────────────────────────────────
+  const observer = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (e.isIntersecting) e.target.classList.add("visible");
+      }),
+    { threshold: 0.1 },
+  );
+  document
+    .querySelectorAll(".reveal-on-scroll")
+    .forEach((el) => observer.observe(el));
