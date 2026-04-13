@@ -4,6 +4,15 @@ import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
   output: "server",
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    platformProxy: {
+      enabled: true,
+    },
+  }),
   integrations: [tailwind()],
+  image: {
+    service: {
+      entrypoint: "astro/assets/services/passthrough",
+    },
+  },
 });

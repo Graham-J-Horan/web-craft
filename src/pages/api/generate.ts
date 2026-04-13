@@ -128,13 +128,19 @@ async function generateWithCloudflareWorker(
   }
 
   const imageBuffer = await response.arrayBuffer();
-  const base64Image = Buffer.from(imageBuffer).toString('base64');
+  // Using btoa/Uint8Array for Cloudflare compatibility without needing nodejs_compat
+  const base64Image = btoa(
+    new Uint8Array(imageBuffer).reduce(
+      (data, byte) => data + String.fromCharCode(byte),
+      '',
+    ),
+  );
   return `data:image/png;base64,${base64Image}`;
 }
 
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   // ── 1. Parse & validate input ──────────────────────────────────────────────
 
   let body: Partial<GenerateRequest>;
@@ -169,10 +175,18 @@ export const POST: APIRoute = async ({ request }) => {
 
   // ── 2. Validate environment variables ──────────────────────────────────────
 
+  // On Cloudflare, env vars are in locals.runtime.env
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+  const cfEnv = (locals as any)?.runtime?.env || {};
+
   const geminiApiKey =
-    import.meta.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+    import.meta.env.GEMINI_API_KEY ||
+    cfEnv.GEMINI_API_KEY ||
+    process.env.GEMINI_API_KEY;
   const cloudflareWorkerUrl =
-    import.meta.env.CLOUDFLARE_WORKER_URL || process.env.CLOUDFLARE_WORKER_URL;
+    import.meta.env.CLOUDFLARE_WORKER_URL ||
+    cfEnv.CLOUDFLARE_WORKER_URL ||
+    process.env.CLOUDFLARE_WORKER_URL;
 
   if (!geminiApiKey) {
     return errorResponse('GEMINI_API_KEY is not configured', 500);
