@@ -3,11 +3,14 @@ import cloudflare from "@astrojs/cloudflare";
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  output: "static", // Hybrid-by-default in Astro 6
+  output: "static", 
   adapter: cloudflare({
+    mode: 'directory',
     imageService: 'passthrough',
-    // Fixes the "Failed to get static paths" error in Astro 6 + Cloudflare
     prerenderEnvironment: 'node',
   }),
   integrations: [tailwind()],
+  session: {
+    enabled: false
+  }
 });
