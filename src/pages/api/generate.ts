@@ -147,7 +147,7 @@ export const GET: APIRoute = async () => {
   });
 };
 
-export const POST: APIRoute = async ({ request, locals }) => {
+export const POST: APIRoute = async ({ request }) => {
   // ── 1. Parse & validate input ──────────────────────────────────────────────
 
   let body: Partial<GenerateRequest>;
@@ -182,17 +182,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   // ── 2. Validate environment variables ──────────────────────────────────────
 
-  // On Cloudflare, env vars are in locals.runtime.env
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  const cfEnv = (locals as any)?.runtime?.env || {};
-
   const geminiApiKey =
     import.meta.env.GEMINI_API_KEY ||
-    cfEnv.GEMINI_API_KEY ||
     process.env.GEMINI_API_KEY;
   const cloudflareWorkerUrl =
     import.meta.env.CLOUDFLARE_WORKER_URL ||
-    cfEnv.CLOUDFLARE_WORKER_URL ||
     process.env.CLOUDFLARE_WORKER_URL;
 
   if (!geminiApiKey) {
