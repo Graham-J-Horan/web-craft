@@ -3,14 +3,9 @@ import cloudflare from "@astrojs/cloudflare";
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  output: "static", 
+  output: "hybrid",
   adapter: cloudflare({
-    mode: 'directory',
-    imageService: 'passthrough',
-    prerenderEnvironment: 'node',
+    imageService: "passthrough",
   }),
   integrations: [tailwind()],
-  session: {
-    enabled: false
-  }
 });
