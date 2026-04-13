@@ -3,6 +3,7 @@
   "compilerOptions": {
     "strictNullChecks": true,
     "ignoreDeprecations": "6.0",
+    "types": ["@astrojs/cloudflare"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
