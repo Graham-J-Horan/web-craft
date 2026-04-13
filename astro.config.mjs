@@ -3,8 +3,9 @@ import cloudflare from "@astrojs/cloudflare";
 import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
-  output: "server",
+  output: "hybrid",
   adapter: cloudflare({
+    mode: 'directory',
     imageService: 'passthrough',
     platformProxy: {
       enabled: true,
