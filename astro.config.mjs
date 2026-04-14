@@ -4,7 +4,7 @@ import tailwind from "@astrojs/tailwind";
 export default defineConfig({
   output: "static",
   site: "https://web-craft.pages.dev", 
-  base: "./", 
+  base: "/", 
   integrations: [tailwind()],
   build: {
     format: 'directory'
