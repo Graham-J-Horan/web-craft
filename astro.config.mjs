@@ -3,10 +3,11 @@ import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
   output: "static",
-  // Replace with your actual Cloudflare Pages URL once you have it
-  // site: "https://web-craft-v2.pages.dev", 
+  site: "https://web-craft.pages.dev", // Replace with your actual Pages URL
+  base: "/",
   integrations: [tailwind()],
   build: {
     format: 'directory'
-  }
+  },
+  trailingSlash: 'ignore'
 });
