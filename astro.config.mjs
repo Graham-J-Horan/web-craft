@@ -3,8 +3,8 @@ import tailwind from "@astrojs/tailwind";
 
 export default defineConfig({
   output: "static",
-  site: "https://web-craft.pages.dev", // Replace with your actual Pages URL
-  base: "/",
+  site: "https://web-craft.pages.dev", 
+  base: "./", 
   integrations: [tailwind()],
   build: {
     format: 'directory'
