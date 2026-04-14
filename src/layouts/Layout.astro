@@ -9,7 +9,7 @@ interface Props {
 const {
   title = 'WebCraft — Your Website, Designed by AI. Built by Us.',
   description = 'Answer 4 questions. Get a bespoke AI-generated website mockup for your trade in seconds. Love it — lock it in and receive your no-obligation proposal within 72 hours.',
-} = Astro.props;
+} = Astro.props as Props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site ?? 'https://webcraft.ai');
 ---
