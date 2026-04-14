@@ -5,8 +5,11 @@
   "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./dist",
-    "binding": "ASSETS",
     "not_found_handling": "404-page"
+  },
+  "ai": { "binding": "AI" },
+  "vars": {
+    "GEMINI_API_KEY": "AIzaSyDUs9b0JGL-OaZv0QR0IRxy4tz4pnVxT9k"
   },
   "observability": { "enabled": true }
 }
