@@ -6,10 +6,9 @@ export default defineConfig({
   output: "static",
   adapter: cloudflare({
     imageService: "passthrough",
-    platformProxy: { enabled: true },
-    prerenderEnvironment: "node",
-    session: false, // ← move it here, inside the adapter
+    platformProxy: {
+      enabled: true,
+    },
   }),
   integrations: [tailwind()],
-  // remove the top-level session block entirely
 });
