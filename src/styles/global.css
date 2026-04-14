@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* ============================================================
    global.css — single source of truth for WebCraft
    Imported in every page via: import '../styles/global.css'
