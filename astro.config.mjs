@@ -7,6 +7,7 @@ export default defineConfig({
   adapter: cloudflare({
     imageService: "passthrough",
     platformProxy: { enabled: true },
+    prerenderEnvironment: "node",
     session: false, // ← move it here, inside the adapter
   }),
   integrations: [tailwind()],
